@@ -1,8 +1,8 @@
-### Introduction
+# Introduction
 
 The backend server for AI-Art frontend module
 
-### Environment Variables
+# Environment Variables
 
 - `ALLOWED_ORIGIN` - Allowed origin for the API Requests
 - `PORT` - Port for server
