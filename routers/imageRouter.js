@@ -10,7 +10,7 @@ const {
 	updateImageVisibility,
 } = require("../services/mongo");
 
-router.post("/generate", async (req, res) => {
+router.post("/generate", limiter, async (req, res) => {
 	try {
 		const { prompt, name, email } = req.body;
 
