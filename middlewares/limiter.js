@@ -1,4 +1,4 @@
-const limitCounter = require("../data/limitCounter.json");
+const limitCounter = require("../tmp/limitCounter.json");
 const fs = require("fs");
 
 module.exports = (req, res, next) => {
