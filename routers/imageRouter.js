@@ -40,7 +40,7 @@ router.post("/generate", limiter, async (req, res) => {
 							fs.unlink(file, (err3) => {
                                 if (err3) {
                                     console.error("Error3 => ", error)
-									return res.json({ success: false, message: err3.message });
+									return res.json({ success: false, message: err3.message, details : "Error3" });
 								}
 								return res.json({
 									success: true,
@@ -51,17 +51,17 @@ router.post("/generate", limiter, async (req, res) => {
 						})
                         .catch((err2) => {
                             console.error("Error2 => ", error)
-							return res.json({ success: false, message: err2.message });
+							return res.json({ success: false, message: err2.message, details : "Error2" });
 						});
 				})
                 .catch((err) => {
                     console.error("Err => ", error)
-					return res.json({ success: false, message: err.message });
+					return res.json({ success: false, message: err.message, details : "Err" });
 				});
 		});
     } catch (error) {
         console.error("Error => ", error)
-		return res.json({ success: false, message: error.message });
+		return res.json({ success: false, message: error.message, details : "Error" });
 	}
 });
 
