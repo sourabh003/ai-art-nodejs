@@ -16,30 +16,44 @@ router.post("/generate", limiter, async (req, res) => {
 
 		const imageData = await generateImage(prompt);
 		const uniqueId = Date.now();
+
 		const file = `./tmp/${uniqueId}.png`;
 
-		await fs.writeFileSync(file, imageData, "base64");
-
-		const url = await uploadImageToCloudinary(uniqueId, file);
-
-		const savedImage = await saveImageToDB({
-			uniqueId,
-			url,
-			prompt,
-			isPrivate: false,
-			uploadedBy: {
-				name,
-				email,
-			},
-		});
-		setTimeout(async () => {
-			fs.unlinkSync(file);
-		}, 10000);
-
-		return res.json({
-			success: true,
-			message: "Voila!",
-			data: { ...savedImage },
+		fs.writeFile(file, imageData, { encoding: "base64" }, function (error) {
+			if (error) {
+				return res.json({ success: false, message: error.message });
+			}
+			uploadImageToCloudinary(uniqueId, file)
+				.then((url) => {
+					saveImageToDB({
+						uniqueId,
+						url,
+						prompt,
+						isPrivate: false,
+						uploadedBy: {
+							name,
+							email,
+						},
+					})
+						.then((savedImage) => {
+							fs.unlink(file, (err3) => {
+								if (err3) {
+									return res.json({ success: false, message: err3.message });
+								}
+								return res.json({
+									success: true,
+									message: "Voila!",
+									data: { ...savedImage },
+								});
+							});
+						})
+						.catch((err2) => {
+							return res.json({ success: false, message: err2.message });
+						});
+				})
+				.catch((err) => {
+					return res.json({ success: false, message: err.message });
+				});
 		});
 	} catch (error) {
 		return res.json({ success: false, message: error.message });
