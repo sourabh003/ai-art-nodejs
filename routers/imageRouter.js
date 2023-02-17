@@ -9,12 +9,13 @@ const {
 	getAllImages,
 	updateImageVisibility,
 } = require("../services/mongo");
+const imageData = require('../utils/dummy.json').data;
 
 router.post("/generate", limiter, async (req, res) => {
 	try {
 		const { prompt, name, email } = req.body;
 
-		const imageData = await generateImage(prompt);
+		// const imageData = await generateImage(prompt);
 		const uniqueId = Date.now();
 
 		const file = `tmp/${uniqueId}.png`;
@@ -37,7 +38,8 @@ router.post("/generate", limiter, async (req, res) => {
 					})
 						.then((savedImage) => {
 							fs.unlink(file, (err3) => {
-								if (err3) {
+                                if (err3) {
+                                    console.log("Error3 => ", error)
 									return res.json({ success: false, message: err3.message });
 								}
 								return res.json({
@@ -47,15 +49,18 @@ router.post("/generate", limiter, async (req, res) => {
 								});
 							});
 						})
-						.catch((err2) => {
+                        .catch((err2) => {
+                            console.log("Error2 => ", error)
 							return res.json({ success: false, message: err2.message });
 						});
 				})
-				.catch((err) => {
+                .catch((err) => {
+                    console.log("Err => ", error)
 					return res.json({ success: false, message: err.message });
 				});
 		});
-	} catch (error) {
+    } catch (error) {
+        console.log("Error => ", error)
 		return res.json({ success: false, message: error.message });
 	}
 });
