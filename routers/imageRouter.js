@@ -39,7 +39,7 @@ router.post("/generate", limiter, async (req, res) => {
 						.then((savedImage) => {
 							fs.unlink(file, (err3) => {
                                 if (err3) {
-                                    console.log("Error3 => ", error)
+                                    console.error("Error3 => ", error)
 									return res.json({ success: false, message: err3.message });
 								}
 								return res.json({
@@ -50,17 +50,17 @@ router.post("/generate", limiter, async (req, res) => {
 							});
 						})
                         .catch((err2) => {
-                            console.log("Error2 => ", error)
+                            console.error("Error2 => ", error)
 							return res.json({ success: false, message: err2.message });
 						});
 				})
                 .catch((err) => {
-                    console.log("Err => ", error)
+                    console.error("Err => ", error)
 					return res.json({ success: false, message: err.message });
 				});
 		});
     } catch (error) {
-        console.log("Error => ", error)
+        console.error("Error => ", error)
 		return res.json({ success: false, message: error.message });
 	}
 });
