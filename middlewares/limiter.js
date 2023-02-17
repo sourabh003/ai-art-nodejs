@@ -32,6 +32,6 @@ module.exports = (req, res, next) => {
 		};
 	}
 	limitCounter[ip].lastRequest = Date.now();
-	fs.writeFileSync("data/limitCounter.json", JSON.stringify(limitCounter));
+	fs.writeFileSync("tmp/limitCounter.json", JSON.stringify(limitCounter));
 	next();
 };
