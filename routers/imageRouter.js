@@ -9,7 +9,7 @@ const {
 	getAllImages,
 	updateImageVisibility,
 } = require("../services/mongo");
-const imageData = require('../utils/dummy.json').data;
+const imageData = require("../utils/dummy.json").data;
 
 router.post("/generate", limiter, async (req, res) => {
 	try {
@@ -22,7 +22,12 @@ router.post("/generate", limiter, async (req, res) => {
 
 		fs.writeFile(file, imageData, { encoding: "base64" }, function (error) {
 			if (error) {
-				return res.json({ success: false, message: error.message });
+				console.error("write file error");
+				return res.json({
+					success: false,
+					message: error.message,
+					details: "write file error",
+				});
 			}
 			uploadImageToCloudinary(uniqueId, file)
 				.then((url) => {
@@ -38,9 +43,13 @@ router.post("/generate", limiter, async (req, res) => {
 					})
 						.then((savedImage) => {
 							fs.unlink(file, (err3) => {
-                                if (err3) {
-                                    console.error("Error3 => ", error)
-									return res.json({ success: false, message: err3.message, details : "Error3" });
+								if (err3) {
+									console.error("Error3 => ", error);
+									return res.json({
+										success: false,
+										message: err3.message,
+										details: "Error3",
+									});
 								}
 								return res.json({
 									success: true,
@@ -49,19 +58,31 @@ router.post("/generate", limiter, async (req, res) => {
 								});
 							});
 						})
-                        .catch((err2) => {
-                            console.error("Error2 => ", error)
-							return res.json({ success: false, message: err2.message, details : "Error2" });
+						.catch((err2) => {
+							console.error("Error2 => ", error);
+							return res.json({
+								success: false,
+								message: err2.message,
+								details: "Error2",
+							});
 						});
 				})
-                .catch((err) => {
-                    console.error("Err => ", error)
-					return res.json({ success: false, message: err.message, details : "Err" });
+				.catch((err) => {
+					console.error("Err => ", error);
+					return res.json({
+						success: false,
+						message: err.message,
+						details: "Err",
+					});
 				});
 		});
-    } catch (error) {
-        console.error("Error => ", error)
-		return res.json({ success: false, message: error.message, details : "Error" });
+	} catch (error) {
+		console.error("Error => ", error);
+		return res.json({
+			success: false,
+			message: error.message,
+			details: "Error",
+		});
 	}
 });
 
