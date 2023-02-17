@@ -15,70 +15,30 @@ router.post("/generate", limiter, async (req, res) => {
 	try {
 		const { prompt, name, email } = req.body;
 
-		const imageURL = await generateImage(prompt);
-		return res.json({ message: imageURL });
+		const imageData = await generateImage(prompt);
+		const imageBase64 = "data:image/png;base64," + imageData;
 		const uniqueId = Date.now();
 
-		const file = `./tmp/${uniqueId}.png`;
+		const url = await uploadImageToCloudinary(uniqueId, imageBase64);
 
-		fs.writeFile(file, imageData, { encoding: "base64" }, function (error) {
-			if (error) {
-				console.error("write file error");
-				return res.json({
-					success: false,
-					message: error.message,
-					details: "write file error",
-				});
-			}
-			uploadImageToCloudinary(uniqueId, file)
-				.then((url) => {
-					saveImageToDB({
-						uniqueId,
-						url,
-						prompt,
-						isPrivate: false,
-						uploadedBy: {
-							name,
-							email,
-						},
-					})
-						.then((savedImage) => {
-							fs.unlink(file, (err3) => {
-								if (err3) {
-									console.error("Error3 => ", error);
-									return res.json({
-										success: false,
-										message: err3.message,
-										details: "Error3",
-									});
-								}
-								return res.json({
-									success: true,
-									message: "Voila!",
-									data: { ...savedImage },
-								});
-							});
-						})
-						.catch((err2) => {
-							console.error("Error2 => ", error);
-							return res.json({
-								success: false,
-								message: err2.message,
-								details: "Error2",
-							});
-						});
-				})
-				.catch((err) => {
-					console.error("Err => ", error);
-					return res.json({
-						success: false,
-						message: err.message,
-						details: "Err",
-					});
-				});
+		const savedImage = await saveImageToDB({
+			uniqueId,
+			url,
+			prompt,
+			isPrivate: false,
+			uploadedBy: {
+				name,
+				email,
+			},
 		});
+
+		return res.json({
+			success: true,
+			message: "Voila!",
+			data: { ...savedImage },
+        });
+        
 	} catch (error) {
-		console.error("Error => ", error);
 		return res.json({
 			success: false,
 			message: error.message,
