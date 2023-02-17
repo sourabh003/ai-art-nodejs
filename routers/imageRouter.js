@@ -32,8 +32,9 @@ router.post("/generate", limiter, async (req, res) => {
 				email,
 			},
 		});
-
-		fs.unlinkSync(file);
+		setTimeout(async () => {
+			fs.unlinkSync(file);
+		}, 10000);
 
 		return res.json({
 			success: true,
