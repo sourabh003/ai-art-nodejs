@@ -4,7 +4,6 @@ const { Schema } = mongoose;
 const imageSchema = new Schema({
 	uniqueId: { type: String, required: true },
 	url: { type: String, required: true },
-    data: { type: String, required: true },
     prompt: { type: String, required: true },
 	uploadedBy: {
 		name: { type: String, required: true },

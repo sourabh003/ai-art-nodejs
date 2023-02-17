@@ -25,7 +25,6 @@ router.post("/generate", limiter, async (req, res) => {
 		const savedImage = await saveImageToDB({
 			uniqueId,
 			url,
-			data: imageData,
 			prompt,
 			isPrivate: false,
 			uploadedBy: {

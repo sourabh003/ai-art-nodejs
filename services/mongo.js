@@ -20,7 +20,7 @@ module.exports.getAllImages = async () => {
 	return new Promise((resolve, reject) => {
 		(async () => {
 			try {
-				const images = await Image.find({ isPrivate: false });
+				const images = await Image.find({ isPrivate: false }, '_id uniqueId url prompt uploadedBy');
 				return resolve(images);
 			} catch (error) {
 				return reject(error);
