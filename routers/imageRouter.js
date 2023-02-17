@@ -16,7 +16,7 @@ router.post("/generate", limiter, async (req, res) => {
 
 		const imageData = await generateImage(prompt);
 		const uniqueId = Date.now();
-		const file = `./temp/${uniqueId}.png`;
+		const file = `./tmp/${uniqueId}.png`;
 
 		await fs.writeFileSync(file, imageData, "base64");
 
@@ -59,8 +59,8 @@ router.get("/", async (req, res) => {
 });
 
 router.put("/", async (req, res) => {
-    const { id, isPrivate } = req.body;
-    console.log({id, isPrivate})
+	const { id, isPrivate } = req.body;
+	console.log({ id, isPrivate });
 	try {
 		await updateImageVisibility(id, isPrivate);
 		return res.json({
