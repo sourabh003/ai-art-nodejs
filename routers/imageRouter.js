@@ -17,7 +17,7 @@ router.post("/generate", limiter, async (req, res) => {
 		const imageData = await generateImage(prompt);
 		const uniqueId = Date.now();
 
-		const file = `./tmp/${uniqueId}.png`;
+		const file = `tmp/${uniqueId}.png`;
 
 		fs.writeFile(file, imageData, { encoding: "base64" }, function (error) {
 			if (error) {
