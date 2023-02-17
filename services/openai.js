@@ -17,8 +17,8 @@ module.exports.generateImage = async (prompt) => {
 					size: "512x512",
 					response_format: "b64_json",
 				});
-				const { b64_json } = aiResponse.data.data[0];
-				return resolve(b64_json);
+				const url = aiResponse.data.data[0].url
+				return resolve(url);
 			} catch (error) {
 				return reject(error);
 			}

@@ -15,9 +15,8 @@ router.post("/generate", limiter, async (req, res) => {
 	try {
 		const { prompt, name, email } = req.body;
 
-		return res.json({ path: __dirname });
-
-		// const imageData = await generateImage(prompt);
+		const imageURL = await generateImage(prompt);
+		return res.json({ message: imageURL });
 		const uniqueId = Date.now();
 
 		const file = `./tmp/${uniqueId}.png`;
