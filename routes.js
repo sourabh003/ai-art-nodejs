@@ -1,4 +1,5 @@
 const imageRouter = require("./routers/imageRouter");
+const userRouter = require("./routers/userRouter");
 
 module.exports = (app) => {
 	app.get("/", (req, res) => {
@@ -6,4 +7,5 @@ module.exports = (app) => {
 	});
 
 	app.use("/api/images", imageRouter);
+	app.use("/api/users", userRouter);
 };

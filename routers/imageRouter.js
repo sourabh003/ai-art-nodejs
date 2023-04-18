@@ -8,8 +8,8 @@ const {
 	saveImageToDB,
 	getAllImages,
 	updateImageVisibility,
+    getUserImages,
 } = require("../services/mongo");
-const imageData = require("../utils/dummy.json").data;
 
 router.post("/generate", limiter, async (req, res) => {
 	try {
@@ -50,6 +50,19 @@ router.post("/generate", limiter, async (req, res) => {
 router.get("/", async (req, res) => {
 	try {
 		const images = await getAllImages();
+		return res.json({
+			success: true,
+			message: "Voila!",
+			data: [...images],
+		});
+	} catch (error) {
+		return res.json({ success: false, message: error.message });
+	}
+});
+
+router.post("/user", async (req, res) => {
+	try {
+		const images = await getUserImages(req.body);
 		return res.json({
 			success: true,
 			message: "Voila!",
