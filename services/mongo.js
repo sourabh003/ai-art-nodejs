@@ -1,5 +1,6 @@
 const { Image } = require("../models/Image");
 const { User } = require("../models/User");
+const { Request } = require("../models/Request");
 
 module.exports.saveImageToDB = async (imageData) => {
 	return new Promise((resolve, reject) => {
@@ -38,10 +39,9 @@ module.exports.getUserImages = async (user) => {
 	return new Promise((resolve, reject) => {
 		(async () => {
 			try {
-				const images = await Image.find(
-					{ "uploadedBy.email": email }
-				);
-				return resolve(images);k
+				const images = await Image.find({ "uploadedBy.email": email });
+				return resolve(images);
+				k;
 			} catch (error) {
 				return reject(error);
 			}
@@ -76,11 +76,12 @@ module.exports.getUserInfo = ({ photo, name, email }) => {
 					user = new User({ name, email, photo });
 					await user.save();
 				}
-				const remainingRequests = await this.getUserRequestsCount(email);
+				const { remainingRequests, requestRefresh } = await this.getUserRequestsCount(email);
 				const photosCount = await this.getImagesCount(email);
 				let userResponse = {
 					...user._doc,
 					remainingRequests,
+					requestRefresh,
 					photosCount,
 				};
 				return resolve(userResponse);
@@ -92,7 +93,18 @@ module.exports.getUserInfo = ({ photo, name, email }) => {
 };
 
 module.exports.getUserRequestsCount = (email) => {
-	return 5;
+	return new Promise((resolve, reject) => {
+		(async () => {
+			try {
+                let { count, lastRequest } = await Request.findOne({ email });
+				let remainingRequests = 5 - count;
+				let requestRefresh = new Date(lastRequest + 86400000);
+				return resolve({ remainingRequests, requestRefresh });
+			} catch (error) {
+				return reject(error);
+			}
+		})();
+	});
 };
 
 module.exports.getImagesCount = (email) => {
@@ -103,6 +115,25 @@ module.exports.getImagesCount = (email) => {
 					"uploadedBy.email": email,
 				});
 				return resolve(imageCount);
+			} catch (error) {
+				return reject(error);
+			}
+		})();
+	});
+};
+
+module.exports.getUserMetrics = ({ email }) => {
+	return new Promise((resolve, reject) => {
+		(async () => {
+			try {
+				const { remainingRequests, requestRefresh } = await this.getUserRequestsCount(email);
+				const photosCount = await this.getImagesCount(email);
+				let userResponse = {
+					remainingRequests,
+					requestRefresh,
+					photosCount,
+				};
+				return resolve(userResponse);
 			} catch (error) {
 				return reject(error);
 			}

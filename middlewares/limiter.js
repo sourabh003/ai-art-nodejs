@@ -2,12 +2,14 @@ const fs = require("fs");
 const { Request } = require("../models/Request");
 
 module.exports = async (req, res, next) => {
-	try {
+    try {
+        const { email } = req.body;
 		const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
 		const request = await Request.findOne({ ip });
 		const newRequest = {
 			ip,
-			lastRequest: Date.now(),
+            lastRequest: Date.now(),
+            email
 		};
 
 		if (request === null) {
