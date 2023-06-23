@@ -96,7 +96,9 @@ module.exports.getUserRequestsCount = (email) => {
 	return new Promise((resolve, reject) => {
 		(async () => {
 			try {
-                let { count, lastRequest } = await Request.findOne({ email });
+                let request = await Request.findOne({ email });
+                let count = request?.count || 0
+                let lastRequest = request?.lastRequest || Date.now();
 				let remainingRequests = 5 - count;
 				let requestRefresh = new Date(lastRequest + 86400000);
 				return resolve({ remainingRequests, requestRefresh });
